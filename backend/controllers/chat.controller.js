@@ -1,4 +1,4 @@
-import { queryAIEngine } from '../services/ai.service.js';
+import { queryAIEngine, quickChat } from '../services/ai.service.js';
 import {
     buildConversationContext,
     getOrCreateSession,
@@ -124,6 +124,27 @@ export const deleteSession = async (req, res, next) => {
         await Session.deleteOne({ _id: id });
 
         res.json({ message: 'Session deleted successfully.' });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * POST /api/chat/quick
+ * Lightweight contextual Q&A — user asks about a specific research section.
+ */
+export const handleQuickChat = async (req, res, next) => {
+    try {
+        const { question, context, section_name } = req.body;
+        if (!question?.trim() || !context?.trim()) {
+            return res.status(400).json({ error: 'question and context are required.' });
+        }
+        const result = await quickChat({
+            question: question.trim(),
+            context: context.trim(),
+            section_name: section_name || 'Research',
+        });
+        res.json(result);
     } catch (error) {
         next(error);
     }

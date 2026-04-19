@@ -43,10 +43,10 @@ def generate_structured_response(
 
         # Adjust token budget & temperature by mode
         mode_cfg = {
-            "fast":     {"temperature": 0.1, "max_tokens": 1200},
-            "thinking": {"temperature": 0.2, "max_tokens": 3000},
-            "deep":     {"temperature": 0.3, "max_tokens": 5000},
-        }.get(request.research_mode, {"temperature": 0.2, "max_tokens": 3000})
+            "fast":     {"temperature": 0.1, "max_tokens": 2500},
+            "thinking": {"temperature": 0.2, "max_tokens": 5000},
+            "deep":     {"temperature": 0.3, "max_tokens": 7500},
+        }.get(request.research_mode, {"temperature": 0.2, "max_tokens": 5000})
 
         raw_json = call_with_rotation(
             messages=[
@@ -278,7 +278,32 @@ def _build_user_prompt(
         '    "A specific follow-up question the user might ask next",\n'
         '    "Another relevant follow-up question",\n'
         '    "A third question"\n'
-        '  ]\n'
+        '  ],\n'
+        '  "disease_guide": {\n'
+        '    "disease_name": "Full medical name of the condition",\n'
+        '    "overview": "2-3 sentence plain-language summary of the disease, pathophysiology, and prognosis",\n'
+        '    "stages": [\n'
+        '      {\n'
+        '        "name": "Early Stage",\n'
+        '        "timeline": "Years 0-2",\n'
+        '        "description": "What happens at this stage in simple terms",\n'
+        '        "symptoms": ["symptom1", "symptom2"],\n'
+        '        "treatments": ["medication/therapy with brief why"],\n'
+        '        "diet": {\n'
+        '          "eat": [{"item": "food name", "reason": "WHY this food helps at molecular/physiological level"}],\n'
+        '          "avoid": [{"item": "food name", "reason": "WHY this food is harmful and what it does"}]\n'
+        '        },\n'
+        '        "exercise": {\n'
+        '          "recommended": [{"activity": "exercise name", "reason": "WHY this exercise helps and how"}],\n'
+        '          "avoid": [{"activity": "exercise name", "reason": "WHY this exercise is risky at this stage"}]\n'
+        '        },\n'
+        '        "lifestyle": {\n'
+        '          "dos": [{"action": "what to do", "reason": "WHY — physiological or evidence-based explanation"}],\n'
+        '          "donts": [{"action": "what not to do", "reason": "WHY — risk or mechanism explained simply"}]\n'
+        '        }\n'
+        '      }\n'
+        '    ]\n'
+        '  }\n'
         "}\n\n"
         "STRICT RULES:\n"
         "- Every claim in condition_overview must cite (Author, Year) from the provided abstracts.\n"
@@ -291,6 +316,10 @@ def _build_user_prompt(
         "- key_insight must be bold, specific, evidence-grounded — never generic.\n"
         "- contradictions: 2 items max. Only real conflicts/limitations from the retrieved evidence.\n"
         "- follow_up_questions: exactly 3, natural questions a patient/researcher would ask next.\n"
+        "- disease_guide: ALWAYS generate 3-4 disease stages with detailed diet/exercise/lifestyle info.\n"
+        "  Each diet item must explain the molecular/physiological WHY (e.g. 'omega-3 reduces neuroinflammation via COX-2 inhibition').\n"
+        "  Each exercise must explain WHY (e.g. 'tai chi improves proprioception and reduces fall risk by 30%').\n"
+        "  Each lifestyle do/don't must explain the scientific reason simply.\n"
         "- Do NOT invent or hallucinate any facts. Use ONLY the provided publications."
     )
 
@@ -351,6 +380,7 @@ def _parse_llm_response(
         follow_up_questions=follow_up_questions,
         sources=sources,
         agreement_score=min(1.0, max(0.0, llm_agreement)),
+        disease_guide=data.get("disease_guide", {}),
         metadata={
             **pipeline_stats,
             "sources_summary": data.get("sources_summary", ""),

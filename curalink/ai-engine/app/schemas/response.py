@@ -91,6 +91,7 @@ class PipelineResponse(BaseModel):
     agreement_score: float = 0.0           # 0.0–1.0: fraction of evidence supporting conclusion
     confidence_breakdown: dict = {}        # {"avg_relevance":0.82,"formula":"..."}
     location_context: str = ""             # "3 trials near India" or "No India trials, showing global"
+    disease_guide: dict = {}               # Structured disease stages, lifestyle, diet, exercise guide
 
 
 # ─── Expanded Query ───────────────────────────────────────────────────────────

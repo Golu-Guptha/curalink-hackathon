@@ -42,3 +42,18 @@ export const queryAIEngine = async (payload) => {
         throw error;
     }
 };
+
+/**
+ * Quick AI Chat — contextual Q&A on a research section.
+ */
+export const quickChat = async ({ question, context, section_name }) => {
+    try {
+        const response = await aiClient.post('/pipeline/quick-chat', {
+            question, context, section_name,
+        });
+        return response.data;
+    } catch (error) {
+        console.error('[AIProxy] QuickChat failed:', error.message);
+        return { answer: 'Unable to get a response. Please try again.' };
+    }
+};

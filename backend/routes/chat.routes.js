@@ -4,6 +4,7 @@ import {
     getSessions,
     getSessionById,
     deleteSession,
+    handleQuickChat,
 } from '../controllers/chat.controller.js';
 import { protect } from '../middleware/auth.js';
 import { chatLimiter } from '../middleware/rateLimiter.js';
@@ -20,5 +21,8 @@ router.post('/query', chatLimiter, handleChatQuery);
 router.get('/sessions',     getSessions);
 router.get('/sessions/:id', getSessionById);
 router.delete('/sessions/:id', deleteSession);
+
+// Quick contextual AI chat
+router.post('/quick', handleQuickChat);
 
 export default router;

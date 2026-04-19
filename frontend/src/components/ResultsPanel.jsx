@@ -4,14 +4,19 @@ import TrialCard from './TrialCard.jsx';
 import DetailModal from './DetailModal.jsx';
 import IntelligenceHeader from './IntelligenceHeader.jsx';
 import OverviewTab from './OverviewTab.jsx';
+import AnalysisTab from './AnalysisTab.jsx';
+import DiseaseGuideTab from './DiseaseGuideTab.jsx';
+import QuickAIChat from './QuickAIChat.jsx';
 import { exportResultToPDF } from '../utils/exportPDF.js';
 
 
 const TABS = [
-    { id: 'overview', label: ' Overview' },
-    { id: 'insights', label: ' Insights' },
-    { id: 'publications', label: ' Publications' },
-    { id: 'trials', label: ' Trials' },
+    { id: 'overview', label: '🧬 Overview' },
+    { id: 'analysis', label: '⚖️ Deep Analysis' },
+    { id: 'guide', label: '📖 Disease Guide' },
+    { id: 'insights', label: '💡 Insights' },
+    { id: 'publications', label: '📄 Publications' },
+    { id: 'trials', label: '🧪 Trials' },
     { id: 'sources', label: '🔗 Sources' },
 ];
 
@@ -30,6 +35,7 @@ export default function ResultsPanel({ result, activeTab, onTabChange, isLoading
     const [modalItem, setModalItem] = useState(null);
     const [modalType, setModalType] = useState(null);
     const [exporting, setExporting] = useState(false);
+    const [qcOpen, setQcOpen] = useState(false);
 
     const openModal = (item, type) => { setModalItem(item); setModalType(type); };
     const closeModal = () => { setModalItem(null); setModalType(null); };
@@ -100,8 +106,8 @@ export default function ResultsPanel({ result, activeTab, onTabChange, isLoading
                 )}
 
 
-                {/* ── Intelligence Header (moved into scroll) ─────────── */}
-                <IntelligenceHeader result={result} isLoading={isLoading} />
+                {/* ── Intelligence Header (moved into scroll) ────────── */}
+                <IntelligenceHeader result={result} isLoading={isLoading} onAIChat={result ? () => setQcOpen(true) : null} />
 
                 {/* ── Expand toggle (compact mode only) ───────────────── */}
                 {!isExpanded && hasResult && (
@@ -184,6 +190,16 @@ export default function ResultsPanel({ result, activeTab, onTabChange, isLoading
                                 <OverviewTab result={result} onViewMore={openModal} />
                             )}
 
+                            {/* ── DEEP ANALYSIS TAB ─────────────────────── */}
+                            {activeTab === 'analysis' && (
+                                <AnalysisTab result={result} />
+                            )}
+
+                            {/* ── DISEASE GUIDE TAB ──────────────────────── */}
+                            {activeTab === 'guide' && (
+                                <DiseaseGuideTab result={result} />
+                            )}
+
                             {/* ── INSIGHTS TAB ─────────────────────────────── */}
                             {activeTab === 'insights' && (
                                 insights.length === 0
@@ -260,6 +276,15 @@ export default function ResultsPanel({ result, activeTab, onTabChange, isLoading
                                     </>
                             )}
                         </>
+                    )}
+                    {/* ── Quick AI Chat Modal (opened from header) ── */}
+                    {result && qcOpen && (
+                        <QuickAIChat
+                            result={result}
+                            activeTab={activeTab}
+                            forceOpen={true}
+                            onClose={() => setQcOpen(false)}
+                        />
                     )}
                 </div>
             </div>

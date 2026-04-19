@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function IntelligenceHeader({ result, isLoading }) {
+export default function IntelligenceHeader({ result, isLoading, onAIChat }) {
     const [showQueries, setShowQueries] = useState(false);
 
     if (!result && !isLoading) return (
@@ -25,9 +25,15 @@ export default function IntelligenceHeader({ result, isLoading }) {
     return (
         <div className="ih-root">
 
-            {/* ── Line 1: Workspace title ──────────────────────── */}
-            <div className="ih-workspace-title">
-                <span>{disease} Research Analysis</span>
+            {/* ── Line 1: Workspace title + Quick AI button ──── */}
+            <div className="ih-workspace-title-row">
+                <span className="ih-workspace-title">{disease} Research Analysis</span>
+                {onAIChat && (
+                    <button className="ih-quick-ai-btn" onClick={onAIChat}>
+                        <span>⚡</span>
+                        <span>Ask AI</span>
+                    </button>
+                )}
             </div>
 
             {/* ── Line 2: Context chips ────────────────────────── */}

@@ -87,3 +87,13 @@ export const sessionsAPI = {
             headers: authHeaders(),
         }).then(handleResponse),
 };
+
+// ── Quick AI Chat (contextual Q&A on research sections) ────────────────────────
+export const quickChatAPI = async ({ question, context, section_name }) => {
+    const res = await fetch(`${API_BASE}/chat/quick`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ question, context, section_name }),
+    });
+    return handleResponse(res);
+};

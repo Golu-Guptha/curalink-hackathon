@@ -32,6 +32,7 @@ export default function ChatPanel({
     const [deepModalQuery, setDeepModalQuery] = useState(null);
     const [showContext, setShowContext] = useState(false);
     const [modeOpen, setModeOpen] = useState(false);
+    const [ctxOpen, setCtxOpen] = useState(false);
 
     const bottomRef = useRef(null);
     const textareaRef = useRef(null);
@@ -301,22 +302,35 @@ export default function ChatPanel({
 
                     {/* Bottom input bar */}
                     <div className="cp-bottom-bar">
-                        {/* Context reuse indicator — shows when in a follow-up conversation */}
+
+                        {/* Collapsible context reuse indicator */}
                         {isLocked && messages.length > 0 && (
-                            <div className="cp-context-reuse-bar">
-                                <span className="cp-reuse-icon">🔁</span>
-                                <span>Using research context:{' '}
-                                    <strong>{lockedDisease}</strong>
-                                </span>
-                                <span className="cp-reuse-hint">AI will reference your previous results</span>
+                            <div className="cp-ctx-bar-wrap">
+                                <button
+                                    className="cp-ctx-bar-toggle"
+                                    onClick={() => setCtxOpen(v => !v)}
+                                >
+                                    <span className="cp-reuse-icon">🔁</span>
+                                    <span className="cp-ctx-bar-text">Using research context</span>
+                                    <span className="cp-reuse-hint">AI will reference your previous results</span>
+                                    <svg
+                                        className={`cp-ctx-chevron ${ctxOpen ? 'cp-ctx-chevron-open' : ''}`}
+                                        width="12" height="12" viewBox="0 0 12 12" fill="none"
+                                    >
+                                        <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                                    </svg>
+                                </button>
+                                {ctxOpen && (
+                                    <div className="cp-ctx-bar-detail">
+                                        <span className="cp-locked-tag">
+                                            <span>🔬</span>
+                                            <span>{lockedDisease}</span>
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                         )}
-                        {isLocked && (
-                            <div className="cp-locked-tag">
-                                <span></span>
-                                <span>{lockedDisease}</span>
-                            </div>
-                        )}
+
                         {renderInputCard()}
                         <p className="cp-disclaimer-sm">
                             For research only. Not medical advice. Consult a doctor.

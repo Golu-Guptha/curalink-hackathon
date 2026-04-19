@@ -1,3 +1,4 @@
+import gc
 import math
 import asyncio
 from fastapi import APIRouter, HTTPException, Query
@@ -338,12 +339,12 @@ async def run_full_pipeline(request: QueryRequest):
     pubmed_task = fetch_pubmed_publications(
         disease=expanded.disease,
         query=best_query,
-        max_results=80,
+        max_results=50,  # Reduced from 80 to save RAM on free tier
     )
     openalex_task = fetch_openalex_publications(
         disease=expanded.disease,
         query=best_query,
-        max_results=120,
+        max_results=80,  # Reduced from 120 to save RAM on free tier
     )
     trials_task = fetch_clinical_trials(
         disease=expanded.disease,
@@ -417,4 +418,61 @@ async def run_full_pipeline(request: QueryRequest):
     response.location_context = location_context
 
     print(f"[Pipeline] Done. Insights: {len(response.research_insights)}, Confidence: {confidence_breakdown['final']:.0%}")
+
+    # Free large intermediate lists from memory before returning
+    del all_publications, pubmed_pubs, openalex_pubs, trials, ranked_pubs, ranked_trials
+    gc.collect()
+
     return response
+
+
+# ─── Quick AI Chat (contextual Q&A on research sections) ──────────────────────
+
+from pydantic import BaseModel as _QBase
+
+class QuickChatRequest(_QBase):
+    question: str
+    context: str          # serialised section content
+    section_name: str     # e.g. "Overview", "Deep Analysis"
+
+class QuickChatResponse(_QBase):
+    answer: str
+
+
+@router.post("/quick-chat", response_model=QuickChatResponse)
+async def quick_chat(req: QuickChatRequest):
+    """
+    Lightweight contextual Q&A.
+    Takes a section's text content + user question → short answer grounded in context.
+    """
+    from app.services.groq_client import call_with_rotation
+
+    system = (
+        "You are CuraLink Quick Assistant. The user is viewing a specific section of their "
+        "medical research results and has a follow-up question. Answer ONLY using the provided "
+        "context. Be concise (2-4 sentences), accurate, and cite specifics from the context. "
+        "If the context doesn't contain enough information to answer, say so honestly. "
+        "You are a research assistant, NOT a doctor."
+    )
+
+    user_msg = (
+        f"SECTION: {req.section_name}\n\n"
+        f"CONTEXT:\n{req.context[:4000]}\n\n"
+        f"QUESTION: {req.question}"
+    )
+
+    try:
+        answer = call_with_rotation(
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user",   "content": user_msg},
+            ],
+            temperature=0.15,
+            max_tokens=500,
+        )
+        return QuickChatResponse(answer=answer)
+    except Exception as e:
+        print(f"[QuickChat] Error: {e}")
+        return QuickChatResponse(
+            answer="I'm unable to process your question right now. Please try again."
+        )
