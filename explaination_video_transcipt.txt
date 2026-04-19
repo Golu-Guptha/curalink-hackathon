@@ -1,0 +1,134 @@
+00:01 Hey everyone. So we are back once again with a really exciting hackathon. The name of the hackathon is gonna be cura link just to get you a brief about our process.
+00:09 We go after task where you are supposed to create a prototype for this thing which I will be explaining further in the video but right now I'm just giving you a quick glimpse about the process, which I used to do.
+00:18 So humanity founder used to organize a lot of hackathons, distribute certificates, if you will search it over LinkedIn, then you will get to see lot of post.
+00:25 Uh, regarding this project cura link, we do had an hackathon in past. We have a lot of applicants have participated.
+00:31 A lot of submissions we have received in that hackathon. And the winner of this hackathon was Ansh Chachra. And today is still he's working with us on this project.
+00:39 He's doing great so far. But now we want to scale up our team. And that's where we are looking to hire someone with a longer term vision that can do the AI engineering side of thing with a full stack understanding.
+00:49 So if ever needed, he can make some tweaks on the platform as well. So this is the process. You will be getting a telegram link on the notion doc itself.
+00:56 I'm just telling you about that. And this is the query section. We are very strict about discipline. I will try to answer most of your questions, almost 99% of the question within this video itself.
+01:05 What is gonna be the deadline, procedure of submitting, what's gonna be the task, how you can nail it, everything. And then in the query section, ask something if you really feel like that is worth asking for, if that's a very genuine question.
+01:17 In the submission thread, you are supposed to drop your submission. While submitting, you are just supposed to submit the demo video where you can take us through the platform which you're gonna create, show it over a different different queries, how it's getting, how it's studying whose response is,
+01:30 and then submit the deployment link. So we can test out your platform to see how come it's functional. You are not supposed to submit the codes anywhere in this entire hackathon.
+01:40 We will just evaluate you through the video, demo video that you'll be submitting, and then with this deployment link. We'll be testing out your platform.
+01:46 If it's functioning out greatly, then we are very much happy to have you within our team. These are some details on the telegram side and submission side.
+01:53 are there details, try to keep UI UX very much as smooth, code quality, all these things. You are very smart for deployment.
+01:59 You can see how you want to deploy it. It's going to be a very interesting task. Code submission, you are not required to submit your code anywhere in the second.
+02:08 It's just a simple process to evaluate who is having the right skill set. And if you are the person that is having the right skill set, so we welcome you.
+02:14 Use of AI tools, you can make use of cursor or any other AI tool to do the coding. But I will suggest make sure everything is under your control.
+02:20 Don't be like, Blunt, you are not having understanding what's going on so that you can, you know, do those debugging bug fixes, all those things.
+02:27 Discipline, as I've already mentioned, make sure to maintain the decorum. Either we are very much strict, we might blacklist, but yeah, that's something different.
+02:33 Core focus of this hackathon is going to be LLL. I'm going to explain you the process within the further few minutes.
+02:40 So, yeah, in terms of stack stack, you are expected to create a minus stack application. For the LLLM side, you are free to make use of any day.
+02:46 If you feel like Python, fast API, okay, that's fine, anything, Zang or whatever, but make sure it's perfectly integrated into modernistic application.
+02:54 So, you know, if you, even if you're not making use of, if you can make use of NodeJS, then that's great.
+02:57 But I know Python allows much more feasibility, specifically in LLNs and all. So, that's up to you, how you are connecting the chain.
+03:02 Maybe we can have two deployments. For core other endpoints, there can be NodeJS, or AISI, there can be fast CPU.
+03:08 That's up to you. Pretty much flexible. The winner will get a full-time job offer. We are looking to hire someone with a longer vision that can stay with us, that can grow with us, that can work on this project with a good job security being very honest at this position.
+03:21 While on the runner up second, we'll be giving him certificate cash prize. Ideally, we are looking to hire one or maximum two person in this hackathon, but it completely depends upon us how we finally see your submission what we came up with.
+03:34 But yes, there are specific certificates up to third position. And then also if there is one quality of submission, we might give you a certificate of participation, certificate of merit that depends upon how and what type of submissions we are getting throughout the account.
+03:45 Sounds good. Closing node will see this in the end. This is the link of telegram group which you are supposed to join to make the submission.
+03:51 And on the instruction I've already clarified this thing, the core thing is loom video and the live deployed application. In the loom video, we are using loom video as a primary factor to showcase the applications.
+04:01 From, you know, we'll be getting a lot of submissions. So make sure your loom video is pretty much perfect. It should have that audio properly.
+04:08 Don't show the codes in the loom video. If you want to briefly explain the logic, that's great. And then you know, you can just show the live functioning of the application, give it different different use cases and see how as show us how come it's reacting you can speak how you have mailed it or any
+04:19 challenges like try to make it as best as you can and I know many of you have already participated in humanity founded hackathons in paths so yeah this is another chance if you're participating once again we will just be fair the person will mailed it with a proper and in a nice way we'll just have that
+04:36 person sounds good I think I've given you a very great understanding about our process and everything now let's jump on the task so what you are supposed to do in the You are supposed to create a AI full stack, you know, full stack AI Powered Medical Research Assistant prototype using modern stack powered
+04:52 by a custom open source LLM. So you are not supposed to directly make use of Gemini API. You are just supposed to create, you know, a custom LLM.
+05:00 You can make use of open source LLM that can be Olam or something that you can do the research, what are the best platforms that you can leverage in this medical sector which I'm going to give you understanding what this platform is going about.
+05:11 So I'm trying to explain you something so I want you to listen this thing carefully. So this is going to be a platform where it's like my health companion, you know.
+05:20 So if I'm having some disease, it can be lunch infection or something. It can be anyone who is having some specific disease.
+05:25 So that person can search the latest publications in that in that specific disease, which that person is high. So this is a very simple explanation.
+05:35 If someone is having a specific type of disease, so what he will do over that chatbot that person will come over chatbot.
+05:40 But we'll tell him, this is the disease which I'm having, and this is my location. Two things are crucial, disease and location, write it down.
+05:47 And based on that, that LLM will go inside, then there will be a backend logic, which I will be explaining you.
+05:52 There are some open source websites. There are some open source databases, so open Alex and PubMed. These are the two which you can use to get the publications, research publication data.
+06:02 And clinical trials is another website that will help you get clinical trial. But you might be asking, what is clinical trial?
+06:08 I can try to explain you in a very simple way. Clinical trial is basically are the research studies conducted like whatever the studies that is happening associated to that, you know, disease in a very simple language.
+06:21 Like whatever the current studies that is going on is specific to that disease are called as clinical trials. So you are supposed to fetch the research publication and clinical trial for that person who is having that respective disease.
+06:31 Now you will be asking, hey, why we are even doing that? What's the point of doing that? I can go ahead and ask GPD, hey, I'm having this disease.
+06:37 And GPD will be able to get me those answers. Now, here is the catch. You are supposed to do something similar, what GPD is going to do.
+06:43 But while making use of your custom LLM, now that results that we will give will be backed by proper publications and research people.
+06:51 It won't be based on so much data with GPD and Gemini is having written on massive data set, while it will be customized, you know, personalized, more on a research-backed data that you will be able to get from these platforms.
+07:02 I hope I've given you a very basic understanding of what we are trying to do out in this assignment, that's it.
+07:06 That's the assignment. Now, I'm going to take a deeper dive onto everything how you can nail it. Maybe clarify you other respect of the assignment.
+07:16 This is the objective which we have mentioned except use and medical context, which I have mentioned this is intent and location everything fetch relevant research publication and clinical trial, which I've just explained you.
+07:26 And you know, these are just age-related terms. It's fine. I agree you might not be able to get a very high quality and whatever, whatever sort of data, but I want you to give it your best shot.
+07:36 This is prototype. I do acknowledge the point that you can't do something great within just, you know, four or five days of hackathon.
+07:41 But at least you can do at that level, so you can convince us, hey, I've nailed it. It means I can really do it.
+07:46 If I'm getting a chance, I can really need it. This is the sort of attitude we want. And whatever things you are doing, don't try to overdo things.
+07:51 Try to do something which you can explain us. Hey, this is something I did in a very amazing another. Sometimes people are trying to do a lot of things and they're not even able to to nail the basic encode of the deposition.
+08:01 But we have seen hackathons where people have nailed a lot of features in a precise manner, up to mark. So try to nail it in a neat and clean manner.
+08:08 Sounds good. Maintain context across conversation. So let's say if I'm communicating with a chatbot, I hope you all must be aware of this thing.
+08:15 Sometimes it lost the context of the discussion which we are having. So at this point of time, you need to consider it's not losing that context.
+08:21 It should have that perfect understanding of what that person is trying to do. Over the time, we can find you on it, we can do a lot of different things.
+08:27 But right now, you're supposed to create a prototype. You know how you will approach this. Try to come up with best possible way.
+08:32 So let me go through the whole process. Input and understanding inquiry expansion. I don't know how you want to handle this process, but these are some basic details which one can give.
+08:42 I don't know if even this is something which one going to mention. At a user's standpoint of view, one will mention the disease and the location.
+08:48 And then based on these disease and location, you will look at these APIs. You will go on this API and will fetch the data.
+08:54 And you know what, if you're listening to here, we have made this process smoother for you. Because your main focus should be to what's LLA fetching the data is not your focus.
+09:01 So what we did we have created a very nice Documentation where we have given exact endpoints basic query template example, which if you will just put it on Google you'll be able to get the data Which we have made this process is smoother for you even though these all our open source if you will search
+09:17 you know let's search pub mad APA Pub mad APA so look this is the APA, but how you can do this thing here?
+09:25 we have explained it first you need to get ideas then you can fetch it is so here we have given example lung cancer so this process we have almost given you everything but if something is not not worth it here feel free to refer this PubMed same way clinical trial API you can get it same way open Alex
+09:40 API so I can even give you a you know a practical understanding if you look at this website then look these are the endpoints it is having I can show you clinical trial website So you'll get understanding what this website does.
+09:53 So look here, we can give disease and that's it. It will get you these things which you just need to show on the chat box.
+10:00 It's fairly simple, you know, it's not that difficult. Same way, if you will go at PubMed, PubMed and then you can search some things, disease which you are having and it will get you those publications, whatever the publications that are specific to the disease.
+10:13 Sounds good. I think I'm trying to get you in depth understanding of the assignment. So you can easily get the core of the assignment and you can nail it.
+10:20 Now, how you want to do it on behalf of LLM? I'll give it to you about input processing, then research, data retrieval for which we have actually given you endpoints.
+10:27 Now, one thing, let's say if you are having a user quell, avoid fetching just top 102 results. If you really want your LLM to perfect, your process to do in a really nice manner.
+10:37 You can fetch up to 50 or 300 that's completely up to you, publications or clinical trial in the back, then you can filter them, then you can rank them, you can refine them.
+10:45 And then ultimately in the final response, you can show a top 6 to 8 publication, especially to the disease and situation.
+10:50 Now, how you want to do this? It's ultimately your decision. I'm going to give you a brief understanding of that as well.
+10:56 Same for clinical trial, we'll be asking, and then you are going to give us ongoing or completed clinical trial related to the disease or quell.
+11:02 Sounds good. Intelligent, retrieval and re-ranking. This is something I've been mentioning. You can fetch, you know, up to 50 or 300.
+11:08 You can retrieve large sets, not candidate, you can retrieve large sets, apply strong filtering and ranking, and then, you know, or you can get the best one at the top and then you can show those to the users.
+11:20 Now, you need to figure out some core aspects. Let's say if you are restricted to make use of any external API, then how come you will do this thing?
+11:26 What's the role of LLM? How will you be storing this data locally? So these are the things which we have left on you.
+11:33 Some people might be, hey, I want to fetch the data is stored it locally, then create vector embeddings on top of that, you know?
+11:39 And then we'll doing the chunking and whatever the ranking process is. And then after, and we'll pass it to LLM and we'll give the response.
+11:44 Basically, I read by play while I don't know how much data you'll be fetching that's completely up to you. Maybe you can say, hey, I fetch this amount of data and just trying to master this specific disease.
+11:53 This is one way some of you might be saying. Hey, local data storing will become a lot of headache. Let's try to do real time.
+11:59 So if there is a user query in the real time, you'll make that search. you will make use of some open source LLM from hugging phase or somewhere.
+12:05 And then you will do that processing and like ranking filtering. And then you will get your core publication and you can show that to the user, fairly simple.
+12:13 Which I think we have been doing. That's how Gemini will work. Gemini will mainly be used to answer those responses over chatbot on the LLM.
+12:21 Gemini doesn't play any role in fetching the data. You are having the direct endpoints where you just need to put the disease and it will get you the data.
+12:26 So that process is already very, very easy. The core part is how you are preparing the flow of this entire thing.
+12:33 Now, this is where we want to see how smartly you're going to approach this thing, because that's what I decided.
+12:37 If you want to do it locally, if you want to make use of open source stuff, because everything is what it matters, why we are doing it?
+12:42 Because we want more control. We want more fun tuning. We want more customization. We want more perfect and world responses that we want to give.
+12:48 It should not be something big, you know? So we can take it on a schedule on the future. That's why I'm saying this is something with a longer vision.
+12:54 Context of weariness, follow-up intelligence, something which I've already explained. So let's say if I was the latest treatment for lung cancer, then can I take vitamin D?
+13:01 Now, it will be backed by those, you know, research publications, clinical trials, it will see, compare, I don't know how you want to do this thing.
+13:08 We are giving you complete freedom on that side. That's your thing to do. I'm just explaining you this assignment in as simple way as I can.
+13:15 Personalization is something we have kept. Make sure it can understand user condition. I'd have to answer accordingly, improve relevance over time.
+13:20 Now, you might be saying, hey, we might not be able to achieve the accuracy with GPD. So I don't care.
+13:24 Try to give it your best shot as best as you can. That's where this assignment is more towards AI engineering rather than normal prompting and API integration.
+13:31 That's where this is the crucial aspect of this thing. You are just supposed to create a very basic question, basic prototype if you think this is not possible.
+13:37 See what is possible. Do that. I've given you freedom on that side. We have given some parameters, these are the parameters you can extract while you are extracting a publication.
+13:45 Same way there are different parameters for clinical purposes. Just avoid this thing, it's not something mandatory, but just to get you understand.
+13:52 System design freedom, it's completely up to you. If you want real time or a short data, if you want embeddings or not, chunking strategy, ranking pipeline, it's completely up to you.
+13:59 I'm not going to go much deeper on those side. What we want is we want to deploy it where we'll be giving input and you will be getting us a perfect answer.
+14:07 So again, we will be not asking you to give us the codes, but you should be able to explain us on the call how you were doing that.
+14:13 So we can validate that in backend someone is you know, properly doing those things. So we'll ask you to explain those things, but you can learn with the flow.
+14:20 I don't see this as a very complicated process in the era where you are having access to, you know, So, the AI cursor, flawed, they have made coding pretty much simpler.
+14:29 It's just you need to have that understanding or you wanna frame this. So, first, try to understand this task rather than directly jumping on the execution.
+14:35 If you can understand what you gonna do, which is like fairly simple, if you're not able to understand what I've just told you, just go ahead and watch this video.
+14:42 I've tried to explain it in very different different chunks, where you're giving a very brief understanding and try to take you in depth, you know?
+14:49 Example use cases, I think we'll add some more use cases. This is just some headings. will try to you know take a deeper this is just it diseases by the way it's not having location you should consider location as well you know same thing I think I have already given you a very great understanding regarding
+15:01 code submission I've already said no let's talk about the deadline of this assignment this I got on today is Tuesday we want you to take enough time because we understand this will be taking a bit of time I think we are giving three to four days of deadline but in this task specifically, we are giving
+15:18 you a deadline up to five days. So, Wednesday, Thursday, Friday, Saturday, Sunday, you are supposed to make your final submission by Monday, 12 noon, Monday noon, which is like afternoon, you know, 12 pm.
+15:31 So, you are supposed to make submission by then over the group. We will be opening submission line. You will see that you want to be able to submit once you will join the group.
+15:40 We are intentionally keeping it closed. So, you can take enough time to digest everything. Whatever I've just told you in this video, Because I try to explain everything, basically just like a health assistant, companion, whatever you can call it as, health assistant, which is understanding what decision
+15:55 I'm having and giving me solid answers backed by you know, real research, real clinical trials, rather than just really commenting on what what an all GPD knows, you know, sometimes those answers are not that precise enough.
+16:05 So this is the task of wishing you all the very best, very much excited, one more thing, we are aiming to close it by round one itself, which has gone up in Monday noon.
+16:13 If we in one percent case if we feel like there is something that that can be improved so we will give you life feedback But in the round one itself will be picking first, second, third and we will be giving them some prices most likely Which will be you know some amount which will decide which is whatever
+16:27 has been written on the document. It's not final But there will be definitely price specifically in this heck of no doubt if we are extending the round and if we are not if some missions are really great You have nailed it in the first go if someone is really crushing it I know you might be having a 
+16:40 lot of things going in your life which I've seen many of you will be like hey if I But we are giving you weekends.
+16:44 We are giving you you know five days. If someone is sitting with a focus Then I think in one day that person can Can nail you know 80% to 70% of the stocks being very honest in one day if someone is you know fully dedicated towards this thing But again all the very best we are looking forward to Complicate
+17:01 with a lot of applicants. How you gonna nail this thing if there is something we'll communicate over you know intentional chat and mainly over telegram so it's deactivate there and do not share anything with anyone sometime you know people are asking you to share things on DM do not do those things because
+17:16 sometime they they stole your logic and then they we have seen these sort of complaints in past that this person has you know asked for this I've shared it and I was not aware no one will be asking you anything until and unless that has not been instructed by us publicly overgrow which will be officials
+17:30 you can see those you know tags on the grow sounds good mainly Anita will be managing those things and I will be doing those things so and there will be you know program manager and those that will be communicating with you but again everything will be first notified over group if someone is reaching
+17:43 you and you so our team won't be reaching until and unless you will reach that stage of submission we'll be reviewing you we'll be telling you feedback if you have nailed it then let's let's have you in within our team sounds good thank you so much for listening it and wishing you all the very best try
+17:58 to nail it if you're having difficulty transcribe this you know get the transcription of this, be it to something but make sure to watch it.
+18:05 So transcriptions are not having those hallucinations or misalignment. Sounds good. Thank you so much for the best. See you at the submission by a Monday and onetime.
+18:14 Most likely, submission timeline will be opened in the weekends, but by then or the very best. If there is some updates, we feel like making in this document, then feel free to give it a check.
+18:24 Most likely, we'll be adding those another use cases which you guys can refer. Thank you so much. Cheers. That's all.
+18:29 Bye.

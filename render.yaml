@@ -1,0 +1,42 @@
+services:
+  # 1. Node.js Backend
+  - type: web
+    name: curalink-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false # Set this in Render Dashboard
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: PING_URL
+        value: "https://curalink-backend.onrender.com/api/ping" # Keep-alive ping URL
+      - key: AI_ENGINE_URL
+        value: "https://curalink-ai-engine.onrender.com"
+      - key: CLIENT_URL
+        sync: false # Set this to your Vercel frontend URL after deploying it
+
+  # 2. Python AI Engine
+  - type: web
+    name: curalink-ai-engine
+    env: python
+    rootDir: curalink/ai-engine
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false # Set this in Render Dashboard
+      - key: PUBMED_TOOL
+        value: curalink
+      - key: PUBMED_EMAIL
+        sync: false # Set to your email
+      - key: MODEL_NAME
+        value: llama-3.1-70b-versatile
