@@ -22,7 +22,7 @@ const QUICK_CHIPS = [
 ];
 
 export default function ChatPanel({
-    messages, isLoading, onQuery, error,
+    messages, isLoading, isChatLoading, onQuery, error,
     lockedDisease, currentQuery, followUps,
 }) {
     const [query, setQuery] = useState('');
@@ -38,7 +38,7 @@ export default function ChatPanel({
     const contextRef = useRef(null);
     const modeRef = useRef(null);
 
-    const isEmpty = messages.length === 0 && !isLoading;
+    const isEmpty = messages.length === 0 && !isLoading && !isChatLoading;
     const isLocked = !!lockedDisease;
     const lastMsg = messages[messages.length - 1];
     const showFollowUps = !isLoading && lastMsg?.role === 'ai' && (followUps?.length > 0);
@@ -146,7 +146,7 @@ export default function ChatPanel({
                 onChange={handleQueryChange}
                 onKeyDown={handleKeyDown}
                 rows={1}
-                disabled={isLoading}
+                disabled={isLoading || isChatLoading}
             />
 
             {/* Right actions: mode + send */}
@@ -178,7 +178,7 @@ export default function ChatPanel({
                     id="send-btn"
                     className="cp-send-btn"
                     onClick={() => handleSend()}
-                    disabled={isLoading || !query.trim()}
+                    disabled={isLoading || isChatLoading || !query.trim()}
                 >
                     {isLoading ? (
                         <svg className="send-spinner" width="16" height="16" viewBox="0 0 16 16">
@@ -254,7 +254,17 @@ export default function ChatPanel({
                 <>
                     {/* Messages scroll area */}
                     <div className="chat-messages">
-                        {messages.map((msg) => (
+                        {isChatLoading ? (
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, color: 'var(--text-secondary)', opacity: 0.8, gap: '12px' }}>
+                                <svg className="send-spinner" width="24" height="24" viewBox="0 0 16 16">
+                                    <circle cx="8" cy="8" r="6" stroke="rgba(255,255,255,0.15)" strokeWidth="2" fill="none" />
+                                    <path d="M8 2a6 6 0 0 1 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
+                                </svg>
+                                <span>Loading chat...</span>
+                            </div>
+                        ) : (
+                            <>
+                                {messages.map((msg) => (
                             <div key={msg.id} className={`msg msg-${msg.role}`}>
                                 {msg.role === 'ai' && <div className="msg-ai-avatar">C</div>}
                                 <div className="msg-col">
@@ -285,6 +295,8 @@ export default function ChatPanel({
                         )}
                         {error && <div className="error-banner">⚠️ {error}</div>}
                         <div ref={bottomRef} />
+                        </>
+                        )}
                     </div>
 
                     {/* Bottom input bar */}

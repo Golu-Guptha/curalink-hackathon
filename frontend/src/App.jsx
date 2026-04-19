@@ -63,8 +63,8 @@ export default function App() {
     const [followUps, setFollowUps] = useState([]);
     const [activeTab, setActiveTab] = useState('overview');
     const [isLoading, setIsLoading] = useState(false);
+    const [isChatLoading, setIsChatLoading] = useState(false);
     const [error, setError] = useState(null);
-
     // ── Restore user from token ─────────────────────────────────────
     useEffect(() => {
         const token = getToken();
@@ -104,8 +104,9 @@ export default function App() {
         setSessionLocation(session.location || '');
         setCurrentResult(null); setActiveTab('overview');
         setError(null); setCurrentQuery(''); setFollowUps([]);
+        setMessages([]);
 
-        setIsLoading(true);
+        setIsChatLoading(true);
         try {
             const data = await sessionsAPI.getById(session._id);
             const msgs = (data.messages || []).map(m => ({
@@ -122,7 +123,7 @@ export default function App() {
                 setFollowUps(lastAI.structuredResponse.follow_up_questions || []);
             }
         } catch { setMessages([]); }
-        finally { setIsLoading(false); }
+        finally { setIsChatLoading(false); }
     };
 
     const handleTogglePin = (sessionId) => {
@@ -291,6 +292,7 @@ export default function App() {
                             <ChatPanel
                                 messages={messages}
                                 isLoading={isLoading}
+                                isChatLoading={isChatLoading}
                                 onQuery={handleQuery}
                                 error={error}
                                 lockedDisease={sessionDisease}
