@@ -105,6 +105,7 @@ export default function App() {
         setCurrentResult(null); setActiveTab('overview');
         setError(null); setCurrentQuery(''); setFollowUps([]);
 
+        setIsLoading(true);
         try {
             const data = await sessionsAPI.getById(session._id);
             const msgs = (data.messages || []).map(m => ({
@@ -121,6 +122,7 @@ export default function App() {
                 setFollowUps(lastAI.structuredResponse.follow_up_questions || []);
             }
         } catch { setMessages([]); }
+        finally { setIsLoading(false); }
     };
 
     const handleTogglePin = (sessionId) => {
