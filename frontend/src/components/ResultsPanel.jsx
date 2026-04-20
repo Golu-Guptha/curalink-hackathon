@@ -11,12 +11,12 @@ import { exportResultToPDF } from '../utils/exportPDF.js';
 
 
 const TABS = [
-    { id: 'overview', label: '🧬 Overview' },
-    { id: 'analysis', label: '⚖️ Deep Analysis' },
-    { id: 'guide', label: '📖 Disease Guide' },
-    { id: 'insights', label: '💡 Insights' },
-    { id: 'publications', label: '📄 Publications' },
-    { id: 'trials', label: '🧪 Trials' },
+    { id: 'overview', label: 'Overview' },
+    { id: 'analysis', label: 'Deep Analysis' },
+    { id: 'guide', label: 'Disease Guide' },
+    { id: 'insights', label: 'Insights' },
+    { id: 'publications', label: 'Publications' },
+    { id: 'trials', label: 'Trials' },
     { id: 'sources', label: '🔗 Sources' },
 ];
 

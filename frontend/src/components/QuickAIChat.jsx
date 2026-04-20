@@ -28,18 +28,18 @@ function serializeGuide(result) {
     const guide = result.disease_guide;
     if (!guide?.stages) return 'No disease guide available.';
     return guide.stages.map(s => {
-        const eat   = (s.diet?.eat    || []).map(e => `${e.item}: ${e.reason}`).join('; ');
-        const avoid = (s.diet?.avoid  || []).map(e => `${e.item}: ${e.reason}`).join('; ');
+        const eat = (s.diet?.eat || []).map(e => `${e.item}: ${e.reason}`).join('; ');
+        const avoid = (s.diet?.avoid || []).map(e => `${e.item}: ${e.reason}`).join('; ');
         const exRec = (s.exercise?.recommended || []).map(e => `${e.activity}: ${e.reason}`).join('; ');
         const exAvd = (s.exercise?.avoid || []).map(e => `${e.activity}: ${e.reason}`).join('; ');
-        const dos   = (s.lifestyle?.dos   || []).map(e => `${e.action}: ${e.reason}`).join('; ');
+        const dos = (s.lifestyle?.dos || []).map(e => `${e.action}: ${e.reason}`).join('; ');
         const donts = (s.lifestyle?.donts || []).map(e => `${e.action}: ${e.reason}`).join('; ');
         return [`--- ${s.name} (${s.timeline || ''}) ---`,
-            `Description: ${s.description || ''}`,
-            `Symptoms: ${(s.symptoms || []).join(', ')}`,
-            eat && `Eat: ${eat}`, avoid && `Avoid: ${avoid}`,
-            exRec && `Exercise: ${exRec}`, exAvd && `Avoid exercise: ${exAvd}`,
-            dos && `Do's: ${dos}`, donts && `Don'ts: ${donts}`,
+        `Description: ${s.description || ''}`,
+        `Symptoms: ${(s.symptoms || []).join(', ')}`,
+        eat && `Eat: ${eat}`, avoid && `Avoid: ${avoid}`,
+        exRec && `Exercise: ${exRec}`, exAvd && `Avoid exercise: ${exAvd}`,
+        dos && `Do's: ${dos}`, donts && `Don'ts: ${donts}`,
         ].filter(Boolean).join('\n');
     }).join('\n\n');
 }
@@ -60,22 +60,22 @@ function serializeTrials(result) {
 }
 
 const SECTION_MAP = {
-    overview:     { label: '🧬 Overview',       serialize: serializeOverview },
-    analysis:     { label: '⚖️ Deep Analysis',   serialize: serializeAnalysis },
-    guide:        { label: '📖 Disease Guide',   serialize: serializeGuide },
-    insights:     { label: '💡 Insights',        serialize: serializeInsights },
-    publications: { label: '📄 Publications',    serialize: serializePublications },
-    trials:       { label: '🧪 Trials',          serialize: serializeTrials },
+    overview: { label: ' Overview', serialize: serializeOverview },
+    analysis: { label: ' Deep Analysis', serialize: serializeAnalysis },
+    guide: { label: ' Disease Guide', serialize: serializeGuide },
+    insights: { label: ' Insights', serialize: serializeInsights },
+    publications: { label: ' Publications', serialize: serializePublications },
+    trials: { label: ' Trials', serialize: serializeTrials },
 };
 
 /* ── Modal Portal ────────────────────────────────── */
 function QuickChatModal({ result, defaultSection, onClose }) {
-    const [section, setSection]   = useState(defaultSection || 'overview');
+    const [section, setSection] = useState(defaultSection || 'overview');
     const [messages, setMessages] = useState([]);
-    const [input, setInput]       = useState('');
-    const [loading, setLoading]   = useState(false);
+    const [input, setInput] = useState('');
+    const [loading, setLoading] = useState(false);
     const scrollRef = useRef(null);
-    const inputRef  = useRef(null);
+    const inputRef = useRef(null);
 
     // auto-scroll
     useEffect(() => {
@@ -127,7 +127,7 @@ function QuickChatModal({ result, defaultSection, onClose }) {
                     </div>
                     <button className="qc-close" onClick={onClose}>
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                            <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                         </svg>
                     </button>
                 </div>
@@ -188,9 +188,9 @@ function QuickChatModal({ result, defaultSection, onClose }) {
                         {loading
                             ? <div className="qc-send-spinner" />
                             : <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                                <path d="M22 2L15 22l-4-9-9-4 20-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
+                                <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                                <path d="M22 2L15 22l-4-9-9-4 20-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
                         }
                     </button>
                 </div>
@@ -212,7 +212,7 @@ export default function QuickAIChat({ result, activeTab, forceOpen, onClose }) {
             <QuickChatModal
                 result={result}
                 defaultSection={activeTab || 'overview'}
-                onClose={onClose || (() => {})}
+                onClose={onClose || (() => { })}
             />
         );
     }
