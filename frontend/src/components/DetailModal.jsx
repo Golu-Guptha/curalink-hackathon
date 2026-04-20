@@ -18,7 +18,7 @@ export default function DetailModal({ item, type, onClose }) {
     }, [handleKey]);
 
     return (
-        <div className="modal-backdrop" onClick={onClose}>
+        <div className="modal-overlay" onClick={onClose}>
             <div className="modal-card" onClick={e => e.stopPropagation()}>
 
                 {/* Header */}
