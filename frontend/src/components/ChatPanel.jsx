@@ -197,7 +197,7 @@ export default function ChatPanel({
     );
 
     return (
-        <section className={`chat-panel ${isEmpty ? 'cp-home-mode' : ''}`}>
+        <section className={`chat-panel cp-root ${isEmpty ? 'cp-home-mode' : ''}`}>
             {deepModalQuery && (
                 <DeepResearchModal
                     query={deepModalQuery}
@@ -254,7 +254,7 @@ export default function ChatPanel({
             {!isEmpty && (
                 <>
                     {/* Messages scroll area */}
-                    <div className="chat-messages">
+                    <div className="chat-messages cp-messages">
                         {isChatLoading ? (
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, color: 'var(--text-secondary)', opacity: 0.8, gap: '12px' }}>
                                 <svg className="send-spinner" width="24" height="24" viewBox="0 0 16 16">
@@ -301,7 +301,7 @@ export default function ChatPanel({
                     </div>
 
                     {/* Bottom input bar */}
-                    <div className="cp-bottom-bar">
+                    <div className="cp-bottom-bar cp-input-wrap">
 
                         {/* Collapsible context reuse indicator */}
                         {isLocked && messages.length > 0 && (

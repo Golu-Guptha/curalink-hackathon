@@ -6,6 +6,7 @@ import ResultsPanel from './components/ResultsPanel.jsx';
 import { queryMedicalResearch, authAPI, sessionsAPI, getToken, clearToken } from './services/api.js';
 import './index-expanded.css';
 import './theme-overrides.css';
+import './mobile.css';
 
 
 const generateSessionId = () =>
@@ -55,6 +56,7 @@ export default function App() {
     });
     const [sidebarRefreshKey, setSidebarRefreshKey] = useState(0);
     const [sidebarOpen, setSidebarOpen] = useState(true); // track sidebar open/collapsed
+    const [mobileView, setMobileView] = useState('chat'); // 'chat' or 'results'
 
     // ── Chat ─────────────────────────────────────────────────────────
     const [messages, setMessages] = useState([]);
@@ -65,6 +67,14 @@ export default function App() {
     const [isLoading, setIsLoading] = useState(false);
     const [isChatLoading, setIsChatLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    // Auto-switch to results on mobile when a result arrives
+    useEffect(() => {
+        if (currentResult && window.innerWidth <= 768) {
+            setMobileView('results');
+        }
+    }, [currentResult]);
+
     // ── Restore user from token ─────────────────────────────────────
     useEffect(() => {
         const token = getToken();
@@ -95,6 +105,10 @@ export default function App() {
         setSessionDisease(''); setSessionLocation('');
         setCurrentQuery(''); setFollowUps([]);
         setAnalysisState('hidden'); // reset panel instantly
+        if (window.innerWidth <= 768) {
+            setMobileView('chat');
+            setSidebarOpen(false);
+        }
     };
 
     const handleSelectSession = async (session) => {
@@ -105,6 +119,11 @@ export default function App() {
         setCurrentResult(null); setActiveTab('overview');
         setError(null); setCurrentQuery(''); setFollowUps([]);
         setMessages([]);
+
+        if (window.innerWidth <= 768) {
+            setMobileView('chat');
+            setSidebarOpen(false);
+        }
 
         setIsChatLoading(true);
         try {
@@ -121,6 +140,7 @@ export default function App() {
             if (lastAI?.structuredResponse) {
                 setCurrentResult(lastAI.structuredResponse);
                 setFollowUps(lastAI.structuredResponse.follow_up_questions || []);
+                if (window.innerWidth <= 768) setMobileView('results');
             }
         } catch { setMessages([]); }
         finally { setIsChatLoading(false); }
@@ -183,6 +203,9 @@ export default function App() {
             setMessages(prev => [...prev, aiMsg]);
             setSidebarRefreshKey(k => k + 1);
 
+            // Auto-switch to results on mobile after query finishes
+            if (window.innerWidth <= 768) setMobileView('results');
+
         } catch (err) {
             const errText = err.message || 'Something went wrong. Please try again.';
             setError(errText);
@@ -195,7 +218,7 @@ export default function App() {
         } finally {
             setIsLoading(false);
         }
-    }, [sessionId, sessionDisease, sessionLocation, isLoading]);
+    }, [sessionId, sessionDisease, sessionLocation, isLoading, analysisState]);
 
     // ── Render ──────────────────────────────────────────────────────
     if (authLoading) {
@@ -211,7 +234,11 @@ export default function App() {
     const hasConversation = messages.length > 0;
 
     return (
-        <div className={`app-shell ${analysisState === 'expanded' ? 'state-expanded' : ''}`}>
+        <div className={`app-shell 
+            ${analysisState === 'expanded' ? 'state-expanded' : ''} 
+            ${sidebarOpen ? 'mobile-open' : ''}
+            ${mobileView === 'chat' ? 'mobile-show-chat' : 'mobile-show-results'}
+        `}>
             <SessionSidebar
                 user={user}
                 currentSessionId={sessionId}
@@ -222,9 +249,45 @@ export default function App() {
                 onLogout={handleLogout}
                 onTogglePin={handleTogglePin}
                 onSidebarToggle={setSidebarOpen}
+                isOpen={sidebarOpen}
+                className={sidebarOpen ? 'mobile-open' : ''}
+            />
+
+            {/* Dark overlay for mobile sidebar */}
+            <div 
+                className={`sb-mobile-overlay ${sidebarOpen ? 'visible' : ''}`}
+                onClick={() => setSidebarOpen(false)}
             />
 
             <div className="main-layout-wrapper">
+                {/* Mobile Top Nav (Visible only on <= 768px via CSS) */}
+                <header className="mobile-nav-bar">
+                    <div className="mobile-nav-left">
+                        <button 
+                            className={`mobile-hamburger ${sidebarOpen ? 'open' : ''}`}
+                            onClick={() => setSidebarOpen(!sidebarOpen)}
+                        >
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                        <span className="mobile-logo">CuraLink</span>
+                    </div>
+                    <div className="mobile-nav-right">
+                        {(hasConversation || isLoading || currentResult) && (
+                            <button 
+                                className="mobile-view-toggle"
+                                onClick={() => setMobileView(mobileView === 'chat' ? 'results' : 'chat')}
+                            >
+                                {mobileView === 'chat' ? 'View Results 🔬' : 'Back to Chat 💬'}
+                                {!isLoading && currentResult && mobileView === 'chat' && (
+                                    <span className="mobile-results-dot" />
+                                )}
+                            </button>
+                        )}
+                    </div>
+                </header>
+
                 {hasConversation && (
                     <header className={`app-header sticky-header ${!sidebarOpen ? 'sidebar-collapsed' : ''}`}>
                         <div className="header-left">

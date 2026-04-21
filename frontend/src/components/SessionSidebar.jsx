@@ -22,17 +22,16 @@ function groupByDate(sessions) {
 export default function SessionSidebar({
     user, currentSessionId, refreshKey,
     pinnedSessions = [], onSelectSession, onNewSession, onLogout, onTogglePin, onSidebarToggle,
+    isOpen = true, className = '',
 }) {
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [open, setOpen] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeMenu, setActiveMenu] = useState(null);
     const searchRef = useRef(null);
 
     // Notify parent when sidebar open state changes
     const toggleOpen = (val) => {
-        setOpen(val);
         onSidebarToggle?.(val);
     };
 
@@ -91,7 +90,7 @@ export default function SessionSidebar({
     return (
         <>
             {/* ── Collapsed: floating toggle + new chat ────────────── */}
-            {!open && (
+            {!isOpen && (
                 <div className="sb-collapsed-bar">
                     <button className="sb-ham-btn" onClick={() => toggleOpen(true)} title="Open sidebar">
                         <span className="sb-ham" /><span className="sb-ham" /><span className="sb-ham" />
@@ -103,8 +102,8 @@ export default function SessionSidebar({
             )}
 
             {/* ── Expanded sidebar ─────────────────────────────────── */}
-            {open && (
-                <aside className="sb-root">
+            {isOpen && (
+                <aside className={`sb-root ${className || ''}`}>
 
                     {/* Top: New Chat + Close */}
                     <div className="sb-top">

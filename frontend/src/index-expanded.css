@@ -137,6 +137,10 @@
 }
 
 /* ── Research Headers (Scrolling) ────────────────────────── */
+.mobile-nav-bar {
+  display: none;
+}
+
 .rp-sticky-bar {
   display: flex;
   align-items: center;
