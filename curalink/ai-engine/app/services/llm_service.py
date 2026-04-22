@@ -141,9 +141,9 @@ def _build_user_prompt(
     research_mode: str = "thinking",
     patient_profile=None,
 ) -> str:
-    # Patient profile block (deep research only)
+    # Patient profile block (all modes — scale detail by mode)
     profile_block = ""
-    if patient_profile and research_mode == "deep":
+    if patient_profile:
         lines = ["PATIENT PROFILE (use this to personalize the answer):"]
         if patient_profile.name:            lines.append(f"  Name: {patient_profile.name}")
         if patient_profile.age:             lines.append(f"  Age: {patient_profile.age}")
@@ -320,6 +320,8 @@ def _build_user_prompt(
         "  Each diet item must explain the molecular/physiological WHY (e.g. 'omega-3 reduces neuroinflammation via COX-2 inhibition').\n"
         "  Each exercise must explain WHY (e.g. 'tai chi improves proprioception and reduces fall risk by 30%').\n"
         "  Each lifestyle do/don't must explain the scientific reason simply.\n"
+        "  If patient profile is provided, tailor stage descriptions, diet, and exercise to the patient's age, conditions, and medications.\n"
+        "  Flag any diet-medication interactions (e.g. vitamin K foods with warfarin). Add region-specific recommendations if location is known.\n"
         "- Do NOT invent or hallucinate any facts. Use ONLY the provided publications."
     )
 

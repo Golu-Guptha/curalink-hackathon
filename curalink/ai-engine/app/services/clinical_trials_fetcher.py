@@ -28,7 +28,7 @@ async def fetch_clinical_trials(
     async with httpx.AsyncClient(timeout=30.0) as client:
         # Fetch RECRUITING and COMPLETED in parallel
         recruiting, completed = await _fetch_both_statuses(
-            client, search_cond, limit // 2
+            client, search_cond, limit // 2, location
         )
 
     all_trials = recruiting + completed
@@ -72,15 +72,16 @@ async def _fetch_both_statuses(
     client: httpx.AsyncClient,
     condition: str,
     per_status: int,
+    location: Optional[str] = None,
 ) -> tuple[list[ClinicalTrial], list[ClinicalTrial]]:
     """Fetch RECRUITING and COMPLETED trials concurrently."""
     import asyncio
 
     recruiting_task = _fetch_trials_by_status(
-        client, condition, "RECRUITING", per_status
+        client, condition, "RECRUITING", per_status, location
     )
     completed_task = _fetch_trials_by_status(
-        client, condition, "COMPLETED", per_status
+        client, condition, "COMPLETED", per_status, location
     )
     results = await asyncio.gather(
         recruiting_task, completed_task, return_exceptions=True
@@ -96,6 +97,7 @@ async def _fetch_trials_by_status(
     condition: str,
     status: str,
     page_size: int,
+    location: Optional[str] = None,
 ) -> list[ClinicalTrial]:
     """Fetch trials for a specific status."""
     params = {
@@ -103,10 +105,11 @@ async def _fetch_trials_by_status(
         "filter.overallStatus": status,
         "pageSize": page_size,
         "format": "json",
-        # NOTE: Do NOT add a 'fields' param — it is a v1 concept and causes
-        # a 500 error on the v2 /studies endpoint. The v2 API returns the
-        # full protocolSection by default; we parse only what we need.
     }
+    # Inject location into API query for native location filtering
+    if location:
+        params["query.locn"] = location
+        print(f"[ClinicalTrials] Location filter applied: {location}")
 
     try:
         response = await client.get(

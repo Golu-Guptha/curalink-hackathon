@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 export default function IntelligenceHeader({ result, isLoading, onAIChat }) {
     const [showQueries, setShowQueries] = useState(false);
+    const [showProfile, setShowProfile] = useState(false);
 
     if (!result && !isLoading) return (
         <div className="ih-empty">
@@ -21,6 +22,13 @@ export default function IntelligenceHeader({ result, isLoading, onAIChat }) {
     const trials = meta.trials_ranked || result?.clinical_trials?.length || 0;
     const rankMethod = meta.ranking_method || 'BM25 + Recency + Citation Count';
     const queries = meta.expanded_queries || [];
+    const locationCtx = meta.location_context || result?.location_context || '';
+    const patientSummary = meta.patient_summary || '';
+    const profileTrace = meta.profile_trace || [];
+    const evidenceMix = meta.evidence_mix || null;
+
+    const locationIsLocal = locationCtx.startsWith('✔');
+    const locationIsGlobal = locationCtx.startsWith('0 trials');
 
     return (
         <div className="ih-root">
@@ -42,7 +50,35 @@ export default function IntelligenceHeader({ result, isLoading, onAIChat }) {
                 <span className="ih-chip ih-chip-intent" title={intent}>
                     {intent.length > 50 ? intent.slice(0, 48) + '…' : intent}
                 </span>
+                {patientSummary && (
+                    <button
+                        className="ih-chip ih-chip-patient"
+                        onClick={() => setShowProfile(v => !v)}
+                        title="Click to see personalization details"
+                    >
+                        👤 {patientSummary}
+                    </button>
+                )}
             </div>
+
+            {/* ── Profile trace panel ───────────────────────────── */}
+            {showProfile && profileTrace.length > 0 && (
+                <div className="ih-profile-trace">
+                    <div className="ih-queries-label">🎯 Personalization Applied</div>
+                    <ul className="ih-profile-list">
+                        {profileTrace.map((item, i) => (
+                            <li key={i} className="ih-profile-item">{item}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
+            {/* ── Location context ──────────────────────────────── */}
+            {locationCtx && (
+                <div className={`ih-location-ctx ${locationIsLocal ? 'ih-loc-local' : locationIsGlobal ? 'ih-loc-global' : ''}`}>
+                    {locationIsLocal ? '🎯' : locationIsGlobal ? '🌍' : '📋'} {locationCtx}
+                </div>
+            )}
 
             {/* ── Divider ──────────────────────────────────────── */}
             <div className="ih-rule" />
@@ -66,6 +102,28 @@ export default function IntelligenceHeader({ result, isLoading, onAIChat }) {
                     <span className="ih-mini-badge ih-badge-openalex">OpenAlex {openAlex}</span>
                 </div>
             </div>
+
+            {/* ── Evidence Mix ─────────────────────────────────── */}
+            {evidenceMix && evidenceMix.total > 0 && (
+                <div className="ih-evidence-mix">
+                    <span className="ih-em-label">Evidence:</span>
+                    {evidenceMix.meta_analysis > 0 && (
+                        <span className="ih-em-badge ih-em-meta">🟢 {evidenceMix.meta_analysis} Meta-analysis</span>
+                    )}
+                    {evidenceMix.rct > 0 && (
+                        <span className="ih-em-badge ih-em-rct">🟢 {evidenceMix.rct} RCT</span>
+                    )}
+                    {evidenceMix.observational > 0 && (
+                        <span className="ih-em-badge ih-em-obs">🟡 {evidenceMix.observational} Observational</span>
+                    )}
+                    {evidenceMix.review > 0 && (
+                        <span className="ih-em-badge ih-em-review">🔵 {evidenceMix.review} Review</span>
+                    )}
+                    {evidenceMix.other > 0 && (
+                        <span className="ih-em-badge ih-em-other">⚪ {evidenceMix.other} Other</span>
+                    )}
+                </div>
+            )}
 
             {/* ── Line 4: Ranking method ───────────────────────── */}
             <div className="ih-method-row">

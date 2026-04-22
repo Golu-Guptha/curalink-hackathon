@@ -990,6 +990,93 @@ body {
   border: 1px solid var(--green-border);
 }
 
+/* Patient personalization chip */
+.ih-chip-patient {
+  background: rgba(139,92,246,0.10);
+  color: #a78bfa;
+  border: 1px solid rgba(139,92,246,0.25);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.ih-chip-patient:hover {
+  background: rgba(139,92,246,0.18);
+  border-color: rgba(139,92,246,0.4);
+}
+
+/* Profile trace panel */
+.ih-profile-trace {
+  background: rgba(139,92,246,0.06);
+  border: 1px solid rgba(139,92,246,0.15);
+  border-radius: var(--r-md);
+  padding: 10px 14px;
+  margin: 6px 0 2px;
+}
+.ih-profile-list {
+  list-style: none; padding: 0; margin: 6px 0 0;
+  display: flex; flex-wrap: wrap; gap: 4px 12px;
+}
+.ih-profile-item {
+  font-size: 11.5px; color: #a78bfa;
+  font-weight: 500;
+}
+
+/* Location context banner */
+.ih-location-ctx {
+  font-size: 11.5px; font-weight: 500;
+  padding: 6px 12px;
+  border-radius: var(--r-sm);
+  margin: 6px 0 0;
+}
+.ih-loc-local {
+  background: var(--green-muted);
+  color: var(--green);
+  border: 1px solid var(--green-border);
+}
+.ih-loc-global {
+  background: rgba(245,158,11,0.08);
+  color: var(--amber);
+  border: 1px solid rgba(245,158,11,0.2);
+}
+
+/* Evidence mix row */
+.ih-evidence-mix {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 0 4px;
+}
+.ih-em-label {
+  font-size: 11px; font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.ih-em-badge {
+  font-size: 10.5px; font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--r-full);
+  border: 1px solid;
+}
+.ih-em-meta, .ih-em-rct {
+  background: var(--green-muted);
+  color: var(--green);
+  border-color: var(--green-border);
+}
+.ih-em-obs {
+  background: rgba(245,158,11,0.08);
+  color: var(--amber);
+  border-color: rgba(245,158,11,0.2);
+}
+.ih-em-review {
+  background: var(--accent-muted);
+  color: #818cf8;
+  border-color: var(--accent-border);
+}
+.ih-em-other {
+  background: rgba(255,255,255,0.04);
+  color: var(--text-secondary);
+  border-color: var(--border-base);
+}
+
 .ih-stats-row {
   display: flex; align-items: center; gap: 16px;
   padding: 14px 0 10px;

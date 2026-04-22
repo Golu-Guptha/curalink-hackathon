@@ -13,6 +13,7 @@ async def fetch_openalex_publications(
     disease: str,
     query: str,
     max_results: Optional[int] = None,
+    location: Optional[str] = None,
 ) -> list[Publication]:
     """
     Fetch publications from OpenAlex across multiple pages.
@@ -23,7 +24,7 @@ async def fetch_openalex_publications(
 
     Returns a list of Publication objects (unranked).
     """
-    search_query = _build_search_query(disease, query)
+    search_query = _build_search_query(disease, query, location)
     max_pages = settings.openalex_max_pages
     per_page = settings.openalex_per_page
 
@@ -58,17 +59,27 @@ async def fetch_openalex_publications(
 
 # ─── Private Helpers ──────────────────────────────────────────────────────────
 
-def _build_search_query(disease: str, query: str) -> str:
+def _build_search_query(disease: str, query: str, location: Optional[str] = None) -> str:
     """
     Construct the OpenAlex search string.
-    Combining disease + intent gives much better results than disease alone.
+    Combining disease + intent + location gives location-aware results.
     """
     disease = disease.strip()
     query = query.strip()
 
     if query and query.lower() != disease.lower():
-        return f"{disease} {query}"
-    return disease
+        term = f"{disease} {query}"
+    else:
+        term = disease
+
+    # Add location context for geographic relevance
+    if location:
+        loc_clean = location.strip().split(",")[0].strip()
+        if loc_clean:
+            term += f" {loc_clean}"
+            print(f"[OpenAlex] Location-aware search: {term}")
+
+    return term
 
 
 async def _fetch_page(

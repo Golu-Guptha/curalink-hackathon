@@ -1,4 +1,4 @@
-﻿import json
+import json
 import re
 from typing import Optional
 from app.config import get_settings
@@ -13,6 +13,7 @@ def expand_query(
     disease: Optional[str] = None,
     location: Optional[str] = None,
     conversation_history: list[dict] = [],
+    patient_profile=None,
 ) -> ExpandedQuery:
     """
     Phase 2 â€” Query Expansion
@@ -45,6 +46,7 @@ def expand_query(
             known_disease=extracted_disease,
             known_location=extracted_location,
             history_summary=_summarize_history(conversation_history),
+            patient_profile=patient_profile,
         )
         return result
     except Exception as e:
@@ -59,20 +61,38 @@ def _llm_expand(
     known_disease: Optional[str],
     known_location: Optional[str],
     history_summary: str,
+    patient_profile=None,
 ) -> ExpandedQuery:
     """Call Groq to do structured query expansion."""
 
     system_prompt = """You are a medical research query expansion expert.
 Given a user query about a medical condition, extract structured information and 
 generate diverse search queries for maximum research coverage.
+When patient context is provided, include age-group-specific and comorbidity-aware terms.
 
 Always respond with ONLY valid JSON, no other text."""
+
+    # Build patient context block for the prompt
+    patient_context = ""
+    if patient_profile:
+        pp = patient_profile
+        parts = []
+        if hasattr(pp, 'age') and pp.age: parts.append(f"Age: {pp.age}")
+        if hasattr(pp, 'sex') and pp.sex: parts.append(f"Sex: {pp.sex}")
+        if hasattr(pp, 'current_disease') and pp.current_disease: parts.append(f"Condition: {pp.current_disease}")
+        if hasattr(pp, 'conditions') and pp.conditions: parts.append(f"Comorbidities: {pp.conditions}")
+        if hasattr(pp, 'current_meds') and pp.current_meds: parts.append(f"Medications: {pp.current_meds}")
+        if hasattr(pp, 'location') and pp.location and not known_location:
+            known_location = pp.location
+        if parts:
+            patient_context = "Patient Context: " + ", ".join(parts)
 
     user_prompt = f"""
 User Query: "{raw_query}"
 {f'Known Disease: {known_disease}' if known_disease else ''}
 {f'Known Location: {known_location}' if known_location else ''}
 {f'Conversation Context: {history_summary}' if history_summary else ''}
+{patient_context}
 
 Extract and generate the following JSON:
 {{
@@ -93,6 +113,9 @@ Rules:
 - Use proper medical terminology
 - Make each query variation meaningfully different
 - clinical_trial_terms should be 2-5 words, specific to the condition + intent
+- If patient context is provided, include age-group-specific terms in at least one query (e.g. 'elderly', 'pediatric')
+- If comorbidities exist, include drug-interaction or contraindication terms in one query
+- If location is provided, include it in one query variation for geographic relevance
 """
 
     raw_json = call_with_rotation(

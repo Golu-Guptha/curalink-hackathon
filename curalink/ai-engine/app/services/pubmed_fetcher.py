@@ -13,6 +13,7 @@ async def fetch_pubmed_publications(
     disease: str,
     query: str,
     max_results: Optional[int] = None,
+    location: Optional[str] = None,
 ) -> list[Publication]:
     """
     Two-step PubMed fetch:
@@ -22,7 +23,7 @@ async def fetch_pubmed_publications(
     Returns a list of Publication objects (unranked).
     """
     limit = max_results or settings.pubmed_max_results
-    search_term = _build_search_term(disease, query)
+    search_term = _build_search_term(disease, query, location)
 
     async with httpx.AsyncClient(timeout=30.0) as client:
         # ── Step 1: Get IDs ────────────────────────────────────────────────────
@@ -59,19 +60,27 @@ async def fetch_pubmed_publications(
 
 # ─── Private Helpers ──────────────────────────────────────────────────────────
 
-def _build_search_term(disease: str, query: str) -> str:
+def _build_search_term(disease: str, query: str, location: Optional[str] = None) -> str:
     """
     Build an intelligent PubMed search term.
-    Combines disease + query with proper PubMed boolean syntax.
+    Combines disease + query + location with proper PubMed boolean syntax.
     """
     disease = disease.strip()
     query = query.strip()
 
     if query and query.lower() != disease.lower():
-        # e.g. "deep brain stimulation AND Parkinson's disease"
-        return f"{query} AND {disease}"
+        term = f"{query} AND {disease}"
     else:
-        return disease
+        term = disease
+
+    # Add location context — PubMed affiliation search
+    if location:
+        loc_clean = location.strip().split(",")[0].strip()  # Use country/first token
+        if loc_clean:
+            term += f" AND {loc_clean}[Affiliation]"
+            print(f"[PubMed] Location-aware search: {term}")
+
+    return term
 
 
 async def _esearch(client: httpx.AsyncClient, term: str, retmax: int) -> list[str]:

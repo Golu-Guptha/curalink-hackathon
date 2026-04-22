@@ -15,6 +15,7 @@ def rank_publications(
     query: str,
     publications: list[Publication],
     top_k: int | None = None,
+    patient_profile=None,
 ) -> list[Publication]:
     """
     Phase 2 — Hybrid Publication Ranker
@@ -65,6 +66,11 @@ def rank_publications(
 
         final_score = (α * sem) + (β * bm25_s) + (γ * recency) + (δ * citation)
 
+        # ── Profile-based personalization boost ────────────────────────────────
+        if patient_profile:
+            profile_boost = _compute_profile_boost(pub, patient_profile)
+            final_score = final_score * (1.0 + profile_boost)
+
         # Set score and extract supporting snippet
         pub.relevance_score = round(final_score, 4)
         pub.supporting_snippet = extract_key_sentence(pub.abstract, query)
@@ -73,6 +79,52 @@ def rank_publications(
     # Sort descending and return top_k
     scored.sort(key=lambda p: p.relevance_score, reverse=True)
     return scored[:k]
+
+
+def _compute_profile_boost(pub: Publication, profile) -> float:
+    """
+    Compute a personalization boost (0.0 to ~0.45) based on how well
+    a publication matches the patient profile.
+    """
+    boost = 0.0
+    text = f"{pub.title} {pub.abstract}".lower()
+
+    # Age-group matching
+    if hasattr(profile, 'age') and profile.age:
+        age = profile.age
+        age_terms = []
+        if age >= 65: age_terms = ["elderly", "older adult", "geriatric", "aged", "senior"]
+        elif age >= 18: age_terms = ["adult", "middle-aged", "middle aged"]
+        elif age >= 12: age_terms = ["adolescent", "teenager", "young adult"]
+        else: age_terms = ["pediatric", "child", "infant", "neonatal"]
+        if any(t in text for t in age_terms):
+            boost += 0.15
+
+    # Gender matching
+    if hasattr(profile, 'sex') and profile.sex:
+        sex_lower = profile.sex.lower()
+        if sex_lower in ["male", "female"]:
+            sex_terms = [sex_lower, "men" if sex_lower == "male" else "women"]
+            if any(t in text for t in sex_terms):
+                boost += 0.10
+
+    # Condition/comorbidity matching
+    if hasattr(profile, 'conditions') and profile.conditions:
+        conditions = [c.strip().lower() for c in profile.conditions.split(",")]
+        for cond in conditions:
+            if cond and len(cond) > 2 and cond in text:
+                boost += 0.20
+                break  # Cap at one condition match
+
+    # Medication matching (drug interaction relevance)
+    if hasattr(profile, 'current_meds') and profile.current_meds:
+        meds = [m.strip().lower() for m in profile.current_meds.split(",")]
+        for med in meds:
+            if med and len(med) > 2 and med in text:
+                boost += 0.10
+                break
+
+    return min(boost, 0.45)  # Cap total boost
 
 
 def rank_clinical_trials(

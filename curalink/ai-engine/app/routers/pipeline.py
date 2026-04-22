@@ -82,12 +82,50 @@ def compute_location_context(ranked_trials: list, user_loc: str) -> str:
     if local_count > 0:
         global_count = len(ranked_trials) - local_count
         return (
-            f"{local_count} trial(s) found near {user_loc}"
+            f"✔ {local_count} trial(s) in {user_loc}"
             + (f" + {global_count} global" if global_count else "")
         )
-    return f"No trials found near {user_loc}. Showing {len(ranked_trials)} global trial(s)."
+    return f"0 trials in {user_loc} — showing {len(ranked_trials)} global trial(s)"
 
 
+def _compute_evidence_mix(ranked_pubs: list) -> dict:
+    """Count study types from publication abstracts for evidence composition display."""
+    rct = 0
+    meta = 0
+    observational = 0
+    review = 0
+    other = 0
+
+    for pub in ranked_pubs:
+        text = (pub.abstract or "").lower()
+        if any(k in text for k in ["randomized controlled", "randomised controlled", "rct", "double-blind", "double blind"]):
+            rct += 1
+        elif any(k in text for k in ["meta-analysis", "systematic review", "pooled analysis"]):
+            meta += 1
+        elif any(k in text for k in ["cohort study", "cross-sectional", "case-control", "observational"]):
+            observational += 1
+        elif any(k in text for k in ["review", "narrative review", "literature review"]):
+            review += 1
+        else:
+            other += 1
+
+    return {
+        "rct": rct,
+        "meta_analysis": meta,
+        "observational": observational,
+        "review": review,
+        "other": other,
+        "total": len(ranked_pubs),
+    }
+
+
+def _age_group(age: int) -> str:
+    """Return a human-readable age group label."""
+    if age >= 65: return "elderly (65+)"
+    if age >= 45: return "middle-aged (45-64)"
+    if age >= 18: return "adult (18-44)"
+    if age >= 12: return "adolescent (12-17)"
+    return "pediatric (<12)"
 
 
 # ─── Phase 1: Individual Fetch Test Endpoints ─────────────────────────────────
@@ -322,12 +360,13 @@ async def run_full_pipeline(request: QueryRequest):
     Returns a fully structured, source-attributed, research-backed response.
     """
 
-    # ── Step 1: Query Expansion ───────────────────────────────────────────────
+    # ── Step 1: Query Expansion (profile-aware) ──────────────────────────────
     expanded = expand_query(
         raw_query=request.query,
         disease=request.disease,
         location=request.location,
         conversation_history=request.conversation_history,
+        patient_profile=request.patient_profile,
     )
     print(f"[Pipeline] Disease: {expanded.disease} | Intent: {expanded.intent}")
     print(f"[Pipeline] Expanded queries: {expanded.expanded_queries[:2]}")
@@ -335,21 +374,28 @@ async def run_full_pipeline(request: QueryRequest):
     # Use the most specific expanded query for fetching
     best_query = expanded.expanded_queries[0] if expanded.expanded_queries else request.query
 
-    # ── Step 2: Parallel Data Fetch ───────────────────────────────────────────
+    # Resolve location: expanded > request > patient_profile
+    user_loc = expanded.location or request.location or ""
+    if not user_loc and request.patient_profile and request.patient_profile.location:
+        user_loc = request.patient_profile.location
+
+    # ── Step 2: Parallel Data Fetch (ALL location-aware) ─────────────────────
     pubmed_task = fetch_pubmed_publications(
         disease=expanded.disease,
         query=best_query,
-        max_results=50,  # Reduced from 80 to save RAM on free tier
+        max_results=50,
+        location=user_loc or None,
     )
     openalex_task = fetch_openalex_publications(
         disease=expanded.disease,
         query=best_query,
-        max_results=80,  # Reduced from 120 to save RAM on free tier
+        max_results=80,
+        location=user_loc or None,
     )
     trials_task = fetch_clinical_trials(
         disease=expanded.disease,
         query=expanded.clinical_trial_terms,
-        location=expanded.location or request.location,
+        location=user_loc or None,
     )
 
     pubmed_pubs, openalex_pubs, trials = await asyncio.gather(
@@ -366,11 +412,11 @@ async def run_full_pipeline(request: QueryRequest):
             detail=f"No research publications found for '{expanded.disease}'. Try a different disease name or query."
         )
 
-    # ── Step 3: Hybrid Ranking ────────────────────────────────────────────────
-    user_loc = expanded.location or request.location or ""
+    # ── Step 3: Hybrid Ranking (profile-aware) ───────────────────────────────
     ranked_pubs = rank_publications(
         query=best_query,
         publications=all_publications,
+        patient_profile=request.patient_profile,
     )
     ranked_trials = rank_clinical_trials(
         query=expanded.clinical_trial_terms,
@@ -383,6 +429,34 @@ async def run_full_pipeline(request: QueryRequest):
     confidence_breakdown = compute_confidence_breakdown(ranked_pubs, ranked_trials)
     agreement_score, agreement_breakdown = compute_agreement_score(ranked_pubs)
     location_context = compute_location_context(ranked_trials, user_loc)
+    evidence_mix = _compute_evidence_mix(ranked_pubs)
+
+    # ── Build patient summary for frontend display ────────────────────────────
+    patient_summary = ""
+    profile_trace = []
+    if request.patient_profile:
+        pp = request.patient_profile
+        parts = []
+        if pp.age: parts.append(f"Age {pp.age}")
+        if pp.sex: parts.append(pp.sex)
+        if pp.location: parts.append(pp.location)
+        if pp.current_disease: parts.append(pp.current_disease)
+        patient_summary = " · ".join(parts) if parts else ""
+        # Build profile trace for pipeline transparency
+        profile_trace.append("✔ Profile-aware query expansion")
+        profile_trace.append("✔ Personalized publication ranking")
+        if pp.age:
+            profile_trace.append(f"✔ Age-specific studies boosted ({_age_group(pp.age)})")
+        if user_loc:
+            profile_trace.append(f"✔ Location-specific retrieval ({user_loc})")
+        if pp.conditions:
+            profile_trace.append("✔ Comorbidity-aware filtering enabled")
+        if pp.current_meds:
+            profile_trace.append("✔ Medication interaction awareness active")
+
+    ranking_method = "BM25 + Semantic + Recency + Citation Count"
+    if request.patient_profile:
+        ranking_method += " + Profile Boost"
 
     # ── Pipeline stats for metadata ───────────────────────────────────────────
     pipeline_stats = {
@@ -395,11 +469,14 @@ async def run_full_pipeline(request: QueryRequest):
         "expanded_disease":     expanded.disease,
         "expanded_intent":      expanded.intent,
         "expanded_queries":     expanded.expanded_queries,
-        "ranking_method":       "BM25 + Semantic + Recency + Citation Count",
+        "ranking_method":       ranking_method,
         "location":             user_loc,
         "confidence_breakdown": confidence_breakdown,
         "agreement_breakdown":  agreement_breakdown,
         "location_context":     location_context,
+        "evidence_mix":         evidence_mix,
+        "patient_summary":      patient_summary,
+        "profile_trace":        profile_trace,
     }
 
     # ── Steps 4-6: Prompt → LLM → Structured Response ────────────────────────
